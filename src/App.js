@@ -7,7 +7,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> Welcome to your first deployment.
+          Welcome to the Docker React App Deployed using Github Actions -- ECR -- ElasticBeanStalk
         </p>
         <a
           className="App-link"
