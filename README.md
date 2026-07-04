@@ -1,4 +1,4 @@
-# 🚀 AWS Containerized CI/CD Pipeline
+# AWS Containerized CI/CD Pipeline
 
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-blue?logo=githubactions&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)
@@ -26,7 +26,7 @@ The objective is to demonstrate a production-style deployment pipeline using mod
 
 ## 🏗️ Architecture
 
-![GitHub Actions](https://raw.githubusercontent.com/asunildev/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/project-architecture.png)
+![GitHub Actions](https://raw.githubusercontent.com/ananthu-sunil/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/project-architecture.png)
 
 ```text
 Feature Branch
@@ -169,19 +169,19 @@ http://localhost:3000
 ## 📸 Screenshots
 
 ### GitHub Actions Workflow
-![GitHub Actions Workflow](https://raw.githubusercontent.com/asunildev/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/github-actions.png)
+![GitHub Actions Workflow](https://raw.githubusercontent.com/ananthu-sunil/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/github-actions.png)
 
 ### Amazon ECR Repository
 
-![Amazon ECR](https://raw.githubusercontent.com/asunildev/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/ecr.png)
+![Amazon ECR](https://raw.githubusercontent.com/ananthu-sunil/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/ecr.png)
 
 ### Elastic Beanstalk Environment
 
-![Elastic Beanstalk](https://raw.githubusercontent.com/asunildev/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/elasticbeanstalk.png)
+![Elastic Beanstalk](https://raw.githubusercontent.com/ananthu-sunil/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/elasticbeanstalk.png)
 
 ### Running Application
 
-![Application](https://raw.githubusercontent.com/asunildev/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/application.png)
+![Application](https://raw.githubusercontent.com/ananthu-sunil/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/application.png)
 
 ---
 
