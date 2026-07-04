@@ -1,70 +1,226 @@
-# Getting Started with Create React App
+# 🚀 AWS Containerized CI/CD Pipeline
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-blue?logo=githubactions&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)
+![AWS ECR](https://img.shields.io/badge/AWS-ECR-FF9900?logo=amazon-aws&logoColor=white)
+![Elastic Beanstalk](https://img.shields.io/badge/AWS-Elastic_Beanstalk-FF9900?logo=amazon-aws&logoColor=white)
 
-## Available Scripts
+An end-to-end DevOps project demonstrating how to containerize a React application using Docker and automate its testing and deployment to AWS Elastic Beanstalk with GitHub Actions.
 
-In the project directory, you can run:
+This project was built as part of my Cloud & DevOps learning journey while transitioning from Embedded Software Engineering to Cloud Engineering.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 📌 Project Overview
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+This project showcases a complete CI/CD workflow where every code push automatically:
 
-### `npm test`
+- Builds the application
+- Runs automated test cases
+- Creates a production Docker image
+- Deploys the application to AWS Elastic Beanstalk
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The objective is to demonstrate a production-style deployment pipeline using modern DevOps practices.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🏗️ Architecture
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+![GitHub Actions](https://raw.githubusercontent.com/asunildev/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/project-architecture.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```text
+Feature Branch
+      │
+      ▼
+GitHub Actions (CI)
+      │
+      ▼
+Build Test Image
+      │
+      ▼
+Run Tests
+      │
+      ▼
+Pull Request
+      │
+      ▼
+Merge to main
+      │
+      ▼
+GitHub Actions (CD)
+      │
+      ▼
+Build Production Docker Image
+      │
+      ▼
+Push Image to Amazon ECR
+      │
+      ▼
+Generate Dockerrun.aws.json
+      │
+      ▼
+Deploy to Elastic Beanstalk
+      │
+      ▼
+EC2 pulls image from ECR
+      │
+      ▼
+Application Running
+```
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## ⚙️ Tech Stack
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+| Technology | Purpose |
+|------------|---------|
+| Git & GitHub | Version control, collaboration, and source code management |
+| GitHub Actions | CI/CD pipeline automation (build, test, deploy) |
+| Docker | Containerization and environment consistency across development and production |
+| Docker Multi-stage Builds | Optimized production image creation with reduced image size |
+| Amazon ECR (Elastic Container Registry) | Secure Docker image storage and versioning |
+| AWS Elastic Beanstalk | PaaS deployment and application hosting on AWS |
+| AWS IAM | Identity and access management for secure AWS resource control |
+| Nginx | Reverse proxy, load balancing, and static asset serving |
+| React | Frontend SPA framework for building UI |
+| Node.js | JavaScript runtime for build tooling and development environment |
+| CI/CD | Automated pipeline for continuous integration and continuous deployment |
+| Cloud Deployment (AWS) | Scalable cloud-based application hosting and delivery |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## ✨ Features
 
-## Learn More
+- Dockerized React application for consistent environments
+- Automated test execution in CI pipeline
+- Continuous Integration using GitHub Actions
+- Continuous Deployment to AWS Elastic Beanstalk
+- Production-ready deployment workflow with Docker multi-stage builds
+- Infrastructure hosted on AWS cloud services
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📂 Project Structure
 
-### Code Splitting
+```
+.
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+├── public/
+├── src/
+├── .dockerignore
+├── .gitignore
+├── Dockerfile
+├── Dockerfile.dev
+├── docker-compose.yml
+├── docker-compose-dev.yml
+├── package-lock.json
+├── package.json
+└── README.md
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🔄 CI/CD Workflow
 
-### Making a Progressive Web App
+Whenever changes are pushed to the main branch:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+1. GitHub Actions workflow starts
+2. Project dependencies are installed
+3. Automated test cases are executed
+4. Docker image is built
+5. Application is deployed to AWS Elastic Beanstalk
+6. Latest version becomes available automatically
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 🧪 Running Locally
 
-### Deployment
+Clone the repository
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```bash
+git clone https://github.com/<your-username>/aws-containerized-cicd-pipeline.git
+```
 
-### `npm run build` fails to minify
+Move into the project
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+cd aws-containerized-cicd-pipeline
+```
+
+Run using Docker
+
+```bash
+docker build -t react-app .
+
+docker run -p 3000:3000 react-app
+```
+
+Open:
+
+```
+http://localhost:3000
+```
+
+---
+
+## 📸 Screenshots
+
+### GitHub Actions Workflow
+![GitHub Actions Workflow](https://raw.githubusercontent.com/asunildev/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/github-actions.png)
+
+### Amazon ECR Repository
+
+![Amazon ECR](https://raw.githubusercontent.com/asunildev/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/ecr.png)
+
+### Elastic Beanstalk Environment
+
+![Elastic Beanstalk](https://raw.githubusercontent.com/asunildev/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/elasticbeanstalk.png)
+
+### Running Application
+
+![Application](https://raw.githubusercontent.com/asunildev/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/application.png)
+
+---
+
+## 📚 Key Learnings
+
+Through this project I gained hands-on experience with:
+
+- Docker fundamentals
+- Dockerfiles
+- Containerized React applications
+- GitHub Actions
+- CI/CD pipelines
+- Automated testing
+- AWS Elastic Beanstalk deployment
+- GitHub Secrets
+- Production deployment workflows
+
+---
+
+## 🚀 Future Improvements
+
+- Deploy using Amazon ECS
+- Push Docker images to Amazon ECR
+- Kubernetes deployment
+- Infrastructure as Code using Terraform
+- Monitoring with CloudWatch
+- Multi-stage Docker builds
+- Blue-Green Deployment
+
+---
+
+## 👨‍💻 About Me
+
+I am an Embedded Software Engineer currently transitioning into Cloud & DevOps Engineering.
+
+This repository is part of my hands-on DevOps learning journey where I build real-world projects using Docker, Kubernetes, AWS, GitHub Actions, and Infrastructure as Code.
+
+Feel free to explore my repositories and follow my journey!
+
+---
+
+## ⭐ If you found this project interesting, consider giving it a Star!
