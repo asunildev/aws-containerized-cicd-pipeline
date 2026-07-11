@@ -95,6 +95,7 @@ push-image-to-ecr:
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
 
 deploy-to-eb:
   stage: deploy
@@ -166,3 +167,4 @@ deploy-to-eb:
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
