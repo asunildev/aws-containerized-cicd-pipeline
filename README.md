@@ -1,11 +1,14 @@
 # AWS Containerized CI/CD Pipeline
 
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-blue?logo=githubactions&logoColor=white)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitLab-orange?logo=gitlab&logoColor=white)
+[![GitHub Actions](https://github.com/ananthu-sunil/aws-containerized-cicd-pipeline/actions/workflows/deploy.yml/badge.svg)](https://github.com/ananthu-sunil/aws-containerized-cicd-pipeline/actions/workflows/deploy.yml)
+[![GitLab CI/CD](https://gitlab.com/ananthu-cloud-devops/aws-containerized-cicd-pipeline/badges/main/pipeline.svg)](https://gitlab.com/ananthu-cloud-devops/aws-containerized-cicd-pipeline/-/pipelines)
 ![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)
 ![AWS ECR](https://img.shields.io/badge/AWS-ECR-FF9900?logo=amazon-aws&logoColor=white)
 ![Elastic Beanstalk](https://img.shields.io/badge/AWS-Elastic_Beanstalk-FF9900?logo=amazon-aws&logoColor=white)
 
-An end-to-end DevOps project demonstrating how to containerize a React application using Docker and automate its testing and deployment to AWS Elastic Beanstalk with GitHub Actions.
+An end-to-end DevOps project demonstrating how to containerize a React application using Docker and automate its testing and deployment to AWS Elastic Beanstalk with GitHub Actions and Gitlab CI/CD.
 
 This project was built as part of my Cloud & DevOps learning journey while transitioning from Embedded Software Engineering to Cloud Engineering.
 
@@ -26,46 +29,45 @@ The objective is to demonstrate a production-style deployment pipeline using mod
 
 ## 🏗️ Architecture
 
-![GitHub Actions](https://raw.githubusercontent.com/ananthu-sunil/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/project-architecture.png)
+![GitHub Actions](https://raw.githubusercontent.com/ananthu-sunil/devops-portfolio/main/projects/01-aws-containerized-cicd-pipeline/images/project-architecture.png)
 
 ```text
-Feature Branch
-      │
-      ▼
-GitHub Actions (CI)
-      │
-      ▼
-Build Test Image
-      │
-      ▼
-Run Tests
-      │
-      ▼
-Pull Request
-      │
-      ▼
-Merge to main
-      │
-      ▼
-GitHub Actions (CD)
-      │
-      ▼
-Build Production Docker Image
-      │
-      ▼
-Push Image to Amazon ECR
-      │
-      ▼
-Generate Dockerrun.aws.json
-      │
-      ▼
-Deploy to Elastic Beanstalk
-      │
-      ▼
-EC2 pulls image from ECR
-      │
-      ▼
-Application Running
+                                 Source Code
+                                      │
+                   ┌──────────────────┴──────────────────┐
+                   ▼                                     ▼
+          GitHub Repository                    GitLab Repository
+                   │                                     │
+                   ▼                                     ▼
+       GitHub Actions (CI/CD)                 GitLab CI/CD
+                   │                                     │
+                   ▼                                     ▼
+        Build Test Docker Image             Build Test Docker Image
+                   │                                     │
+                   ▼                                     ▼
+          Run Automated Tests              Run Automated Tests
+                   │                                     │
+                   ▼                                     ▼
+      Build Production Docker Image    Build Production Docker Image
+                   │                                     │
+                   ▼                                     ▼
+          Push Image to Amazon ECR      Push Image to Amazon ECR
+                   │                                     │
+                   └──────────────────┬──────────────────┘
+                                      ▼
+                      Generate Dockerrun.aws.json
+                                      │
+                                      ▼
+                     Deploy to AWS Elastic Beanstalk
+                                      │
+                                      ▼
+                     EC2 Pulls Image from Amazon ECR
+                                      │
+                                      ▼
+                           Nginx Serves React App
+                                      │
+                                      ▼
+                             Application Running
 ```
 
 ---
@@ -76,6 +78,7 @@ Application Running
 |------------|---------|
 | Git & GitHub | Version control, collaboration, and source code management |
 | GitHub Actions | CI/CD pipeline automation (build, test, deploy) |
+| Gitlab CI/CD  | CI/CD pipeline automation (build, test, deploy) |
 | Docker | Containerization and environment consistency across development and production |
 | Docker Multi-stage Builds | Optimized production image creation with reduced image size |
 | Amazon ECR (Elastic Container Registry) | Secure Docker image storage and versioning |
@@ -94,6 +97,7 @@ Application Running
 - Dockerized React application for consistent environments
 - Automated test execution in CI pipeline
 - Continuous Integration using GitHub Actions
+- Continuous Integration using GitLab CI/CD
 - Continuous Deployment to AWS Elastic Beanstalk
 - Production-ready deployment workflow with Docker multi-stage builds
 - Infrastructure hosted on AWS cloud services
@@ -106,11 +110,13 @@ Application Running
 .
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml
+│       ├── deploy.yml
+│       └── integration.yml
 ├── public/
 ├── src/
 ├── .dockerignore
 ├── .gitignore
+├── .gitlab-ci.yml
 ├── Dockerfile
 ├── Dockerfile.dev
 ├── docker-compose.yml
@@ -118,7 +124,6 @@ Application Running
 ├── package-lock.json
 ├── package.json
 └── README.md
-
 ```
 
 ---
@@ -127,12 +132,14 @@ Application Running
 
 Whenever changes are pushed to the main branch:
 
-1. GitHub Actions workflow starts
+1. CI/CD pipeline is triggered (GitHub Actions in GitHub repository OR GitLab CI/CD in GitLab repository)
 2. Project dependencies are installed
 3. Automated test cases are executed
 4. Docker image is built
 5. Application is deployed to AWS Elastic Beanstalk
 6. Latest version becomes available automatically
+
+> Both GitHub Actions and GitLab CI/CD independently implement the same pipeline workflow.
 
 ---
 
@@ -169,19 +176,22 @@ http://localhost:3000
 ## 📸 Screenshots
 
 ### GitHub Actions Workflow
-![GitHub Actions Workflow](https://raw.githubusercontent.com/ananthu-sunil/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/github-actions.png)
+![GitHub Actions Workflow](https://raw.githubusercontent.com/ananthu-sunil/devops-portfolio/main/projects/01-aws-containerized-cicd-pipeline/images/github-actions.png)
+
+### Gitlab CI/CD Workflow
+![GitHub Actions Workflow](https://raw.githubusercontent.com/ananthu-sunil/devops-portfolio/main/projects/01-aws-containerized-cicd-pipeline/images/gitlab-ci.png)
 
 ### Amazon ECR Repository
 
-![Amazon ECR](https://raw.githubusercontent.com/ananthu-sunil/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/ecr.png)
+![Amazon ECR](https://raw.githubusercontent.com/ananthu-sunil/devops-portfolio/main/projects/01-aws-containerized-cicd-pipeline/images/ecr.png)
 
 ### Elastic Beanstalk Environment
 
-![Elastic Beanstalk](https://raw.githubusercontent.com/ananthu-sunil/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/elasticbeanstalk.png)
+![Elastic Beanstalk](https://raw.githubusercontent.com/ananthu-sunil/devops-portfolio/main/projects/01-aws-containerized-cicd-pipeline/images/elasticbeanstalk.png)
 
 ### Running Application
 
-![Application](https://raw.githubusercontent.com/ananthu-sunil/devops-lab/main/projects/01-aws-containerized-cicd-pipeline/images/application.png)
+![Application](https://raw.githubusercontent.com/ananthu-sunil/devops-portfolio/main/projects/01-aws-containerized-cicd-pipeline/images/application.png)
 
 ---
 
@@ -193,6 +203,7 @@ Through this project I gained hands-on experience with:
 - Dockerfiles
 - Containerized React applications
 - GitHub Actions
+- Gitlab CI/CD
 - CI/CD pipelines
 - Automated testing
 - AWS Elastic Beanstalk deployment

@@ -1,0 +1,168 @@
+variables:
+  IMAGE_TAG: $CI_COMMIT_SHA
+  IMAGE_URI: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+
+stages:
+  - test
+  - build
+  - push
+  - deploy
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - src/**/*
+        - public/**/*
+        - Dockerfile
+        - Dockerfile.dev
+        - docker-compose.yml
+        - docker-compose-dev.yml
+        - package.json
+        - package-lock.json
+        - .gitlab-ci.yml
+
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "main" && $CI_OPEN_MERGE_REQUESTS == null'
+      changes:
+        - src/**/*
+        - public/**/*
+        - Dockerfile
+        - Dockerfile.dev
+        - docker-compose.yml
+        - docker-compose-dev.yml
+        - package.json
+        - package-lock.json
+        - .gitlab-ci.yml
+
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
+        - src/**/*
+        - public/**/*
+        - Dockerfile
+        - Dockerfile.dev
+        - docker-compose.yml
+        - docker-compose-dev.yml
+        - package.json
+        - package-lock.json
+        - .gitlab-ci.yml
+
+    - when: never
+
+default:
+  tags:
+    - powershell-runner
+
+frontend-tests:
+  stage: test
+  script:
+    - docker build -t react-test -f Dockerfile.dev .
+    - docker run --rm -e CI=true react-test npm test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "main"'
+
+build-image:
+  stage: build
+  script:
+    - docker build -t $env:IMAGE_URI .
+    - docker tag $env:IMAGE_URI "$($env:AWS_ACCOUNT_ID).dkr.ecr.$($env:AWS_REGION).amazonaws.com/$($env:ECR_REPOSITORY):latest"
+    - docker save -o image.tar $env:IMAGE_URI
+  artifacts:
+    paths:
+      - image.tar
+    expire_in: 1 hour
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+push-image-to-ecr:
+  stage: push
+  needs:
+    - build-image
+  script:
+    - docker load -i image.tar
+    - |
+      aws configure set aws_access_key_id $env:AWS_ACCESS_KEY_ID
+    - |
+      aws configure set aws_secret_access_key $env:AWS_SECRET_ACCESS_KEY
+    - |
+      aws configure set default.region $env:AWS_REGION
+    - |
+      aws ecr get-login-password --region $env:AWS_REGION |
+      docker login --username AWS --password-stdin "$env:AWS_ACCOUNT_ID.dkr.ecr.$env:AWS_REGION.amazonaws.com"
+    - docker tag $env:IMAGE_URI "$($env:AWS_ACCOUNT_ID).dkr.ecr.$($env:AWS_REGION).amazonaws.com/$($env:ECR_REPOSITORY):latest"
+    - docker push $env:IMAGE_URI
+    - docker push "$($env:AWS_ACCOUNT_ID).dkr.ecr.$($env:AWS_REGION).amazonaws.com/$($env:ECR_REPOSITORY):latest"
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+deploy-to-eb:
+  stage: deploy
+  needs:
+    - push-image-to-ecr
+  script:
+    - |
+      $IMAGE_URI = "$($env:AWS_ACCOUNT_ID).dkr.ecr.$($env:AWS_REGION).amazonaws.com/$($env:ECR_REPOSITORY):$($env:CI_COMMIT_SHA)"
+      $json = @{
+          AWSEBDockerrunVersion = "1"
+          Image = @{
+              Name = $IMAGE_URI
+              Update = "true"
+          }
+          Ports = @(
+              @{
+                  ContainerPort = 80
+              }
+          )
+      } | ConvertTo-Json -Depth 5
+
+      $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+      $DockerrunPath = Join-Path $env:CI_PROJECT_DIR "Dockerrun.aws.json"
+      $ZipPath = Join-Path $env:CI_PROJECT_DIR "deploy.zip"
+      [System.IO.File]::WriteAllText($DockerrunPath, $json, $utf8NoBom)
+
+      Compress-Archive -Path $DockerrunPath -DestinationPath $ZipPath -Force
+
+    - aws s3 cp "$env:CI_PROJECT_DIR\deploy.zip" s3://$env:EB_BUCKET/$env:IMAGE_TAG.zip
+
+    - |
+      aws elasticbeanstalk create-application-version `
+        --application-name $env:EB_APPLICATION_NAME `
+        --version-label $env:IMAGE_TAG `
+        --source-bundle S3Bucket="$env:EB_BUCKET",S3Key="$env:IMAGE_TAG.zip"
+
+    - |
+      aws elasticbeanstalk update-environment `
+        --environment-name $env:EB_ENVIRONMENT_NAME `
+        --version-label $env:IMAGE_TAG
+
+    - |
+      Write-Host "Waiting for deployment..."
+      while ($true)
+      {
+          $status = aws elasticbeanstalk describe-environments `
+              --environment-names $env:EB_ENVIRONMENT_NAME `
+              --query "Environments[0].Status" `
+              --output text
+
+          $health = aws elasticbeanstalk describe-environments `
+              --environment-names $env:EB_ENVIRONMENT_NAME `
+              --query "Environments[0].Health" `
+              --output text
+
+          Write-Host "Status: $status | Health: $health"
+
+          if ($status -eq "Ready" -and $health -eq "Green")
+          {
+              break
+          }
+          Start-Sleep -Seconds 20
+      }
+
+      Write-Host "Deployment Successful."
+
+  environment:
+    name: production
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'

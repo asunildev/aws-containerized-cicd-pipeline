@@ -1,3 +1,11 @@
 package-lock.json
+.git
+.gitlab-ci.yml
+.github
 node_modules
 yarn.lock
+coverage
+dist
+README.md
+.env
+.env.*
