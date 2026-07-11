@@ -4,6 +4,7 @@ import dockerLogo from "./assets/docker.png";
 import ecrLogo from "./assets/aws-ecr-logo.jpg";
 import ebLogo from "./assets/aws-eb-logo.jpg";
 import ghlogo from "./assets/github-actions.jpg";
+import gllogo from "./assets/gitlab.png";
 
 function App() {
   return (
@@ -23,6 +24,12 @@ function App() {
           <div className="tech-card">
             <img src={ghlogo} alt="GitHub Actions" className="logo" />
             <h3>GitHub Actions</h3>
+            <p>CI/CD Pipeline</p>
+          </div>
+
+          <div className="tech-card">
+            <img src={gllogo} alt="GitHub Actions" className="logo" />
+            <h3>Gitlab CI/CD</h3>
             <p>CI/CD Pipeline</p>
           </div>
 
@@ -58,7 +65,7 @@ function App() {
           <div className="feature">✔ Docker Image Creation</div>
           <div className="feature">✔ Push to Amazon ECR</div>
           <div className="feature">✔ Deploy to Elastic Beanstalk</div>
-          <div className="feature">✔ CI/CD via GitHub Actions</div>
+          <div className="feature">✔ CI/CD via GitHub Actions & Gitlab CI/CD</div>
           <div className="feature">✔ Automated Testing</div>
         </div>
 
